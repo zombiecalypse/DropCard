@@ -77,6 +77,9 @@ function handleCorrectAnswer(answer: string): boolean {
         if (card.data.back.toLowerCase() === answer.toLowerCase()) {
             card.element.remove();
             score++;
+            if (score > 0 && score % 5 === 0 && health < 5) {
+                health++;
+            }
             cardRemoved = true;
             return false; // Remove from active cards
         }
