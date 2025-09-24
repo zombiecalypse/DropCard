@@ -71,6 +71,13 @@ export function initGameDOM() {
             pauseGame();
         }
     });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Tab') {
+            event.preventDefault();
+            pauseGame();
+        }
+    });
 }
 
 function pauseGame() {

@@ -182,4 +182,31 @@ describe('FlashCard Game Tests', () => {
             expect(gameArea.innerHTML).not.toContain('<h1>Game Over</h1>');
         });
     });
+
+    describe('Pause and Resume', () => {
+        it('should pause game when Tab key is pressed', () => {
+            expect(state.paused).toBe(false);
+            const tabEvent = new KeyboardEvent('keydown', { key: 'Tab' });
+            document.dispatchEvent(tabEvent);
+            expect(state.paused).toBe(true);
+            const pauseOverlay = document.getElementById('pause-overlay');
+            expect(pauseOverlay).not.toBeNull();
+            expect(pauseOverlay!.textContent).toContain('Paused');
+        });
+
+        it('should resume game when Enter key is pressed while paused', () => {
+            // Pause the game first
+            const tabEvent = new KeyboardEvent('keydown', { key: 'Tab' });
+            document.dispatchEvent(tabEvent);
+            expect(state.paused).toBe(true);
+
+            // Then resume
+            const answerInput = document.getElementById('answer-input') as HTMLInputElement;
+            const enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
+            answerInput.dispatchEvent(enterEvent);
+            expect(state.paused).toBe(false);
+            const pauseOverlay = document.getElementById('pause-overlay');
+            expect(pauseOverlay).toBeNull();
+        });
+    });
 });
