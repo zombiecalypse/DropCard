@@ -262,11 +262,28 @@ class ReverseCardProvider implements CardProvider {
     }
 }
 
+class BothCardProvider implements CardProvider {
+    private provider: CardProvider;
+
+    constructor(provider: CardProvider) {
+        this.provider = provider;
+    }
+
+    getCards(): FlashCard[] {
+        return this.provider.getCards().flatMap(card => [
+            card,
+            { front: card.back, back: card.front }
+        ]);
+    }
+}
+
 export function getCardProvider(mode?: string | null): CardProvider {
     const baseProvider = new DefaultCardProvider();
     switch (mode) {
         case 'reverse':
             return new ReverseCardProvider(baseProvider);
+        case 'both':
+            return new BothCardProvider(baseProvider);
         default:
             return baseProvider;
     }
