@@ -213,6 +213,12 @@ export function spawnCard() {
             speedMultiplier = 0.5; // New cards are slower
         }
 
+        const longestAnswerLength = Math.max(...nextCardData.back.map(answer => answer.length));
+        const baseLength = 10;
+        const lengthAdjustmentFactor = 0.05;
+        const lengthMultiplier = Math.max(0.25, 1 + (baseLength - longestAnswerLength) * lengthAdjustmentFactor);
+        speedMultiplier *= lengthMultiplier;
+
         gameArea.appendChild(cardElement);
         state.activeCards.push({ element: cardElement, data: nextCardData, speedMultiplier });
     }
