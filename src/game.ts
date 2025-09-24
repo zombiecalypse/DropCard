@@ -343,7 +343,7 @@ export function createShuffledDeck() {
     const cardsToShuffle = cardData.slice(0, state.unlockedCardsCount);
 
     const deck: FlashCard[] = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 3; i++) {
         deck.push(...cardsToShuffle);
     }
 
