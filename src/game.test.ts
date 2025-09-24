@@ -25,13 +25,13 @@ describe('FlashCard Game Tests', () => {
     });
 
     describe('createShuffledDeck', () => {
-        it('should create a deck with 5 copies of each card', () => {
+        it('should create a deck with 3 copies of the first 10 cards', () => {
             createShuffledDeck();
-            expect(state.cardDeck.length).toBe(cardData.length * 5);
+            expect(state.cardDeck.length).toBe(10 * 3);
 
-            // Check if one card ('Helo') appears 5 times
+            // Check if one card ('Helo') appears 3 times
             const heloCards = state.cardDeck.filter(card => card.front === 'Helo');
-            expect(heloCards.length).toBe(5);
+            expect(heloCards.length).toBe(3);
         });
     });
 
