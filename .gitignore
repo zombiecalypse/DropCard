@@ -2,9 +2,6 @@
 # Dependencies
 /node_modules
 
-# Compiled TypeScript files
-/dist
-
 # Jest coverage reports
 /coverage
 
