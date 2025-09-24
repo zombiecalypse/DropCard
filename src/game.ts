@@ -1,4 +1,4 @@
-import { FlashCard, cardProvider } from './cards.js';
+import { FlashCard, cardProvider } from './cards';
 
 export const cardData = cardProvider.getCards();
 
