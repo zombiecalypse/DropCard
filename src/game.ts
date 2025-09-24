@@ -6,16 +6,14 @@ interface FlashCard {
 
 // Sample card data
 const cardData: FlashCard[] = [
-    { front: "犬", back: "dog" },
-    { front: "猫", back: "cat" },
-    { front: "鳥", back: "bird" },
-    { front: "魚", back: "fish" },
-    { front: "馬", back: "horse" },
-    { front: "牛", back: "cow" },
-    { front: "羊", back: "sheep" },
-    { front: "猿", back: "monkey" },
-    { front: "象", back: "elephant" },
-    { front: "ライオン", back: "lion" },
+    { front: "Helo", back: "Hello" },
+    { front: "Bore da", back: "Good morning" },
+    { front: "Prynhawn da", back: "Good afternoon" },
+    { front: "Nos da", back: "Good night" },
+    { front: "Sut mae?", back: "How are you?" },
+    { front: "Diolch", back: "Thank you" },
+    { front: "Croeso", back: "Welcome" },
+    { front: "Hwyl", back: "Bye" },
 ];
 
 // Game state
