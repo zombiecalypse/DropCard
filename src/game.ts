@@ -4,6 +4,12 @@ export interface FlashCard {
     back: string[];
 }
 
+interface ActiveCard {
+    element: HTMLElement;
+    data: FlashCard;
+    speedMultiplier: number;
+}
+
 // Sample card data
 export const cardData: FlashCard[] = [
     // Greetings
@@ -241,11 +247,12 @@ export const state = {
     maxHealth: 5,
     health: 3,
     score: 0,
-    activeCards: [] as { element: HTMLElement, data: FlashCard }[],
+    activeCards: [] as ActiveCard[],
     gameSpeed: 1, // Pixels per frame
     cardDeck: [] as FlashCard[],
     paused: false,
     unlockedCardsCount: 0,
+    newCardThreshold: 0,
 };
 
 let spawnTimeoutId: ReturnType<typeof setTimeout>;
@@ -324,6 +331,7 @@ export function updateStats() {
 }
 
 export function createShuffledDeck() {
+    state.newCardThreshold = state.unlockedCardsCount;
     if (state.unlockedCardsCount === 0) {
         // Start with the first 10 cards
         state.unlockedCardsCount = 10;
@@ -382,8 +390,14 @@ export function spawnCard() {
         const nextCardData = state.cardDeck.pop()!;
         const cardElement = createCardElement(nextCardData);
 
+        const cardIndex = cardData.indexOf(nextCardData);
+        let speedMultiplier = 1.0;
+        if (state.newCardThreshold > 0 && cardIndex >= state.newCardThreshold) {
+            speedMultiplier = 0.5; // New cards are slower
+        }
+
         gameArea.appendChild(cardElement);
-        state.activeCards.push({ element: cardElement, data: nextCardData });
+        state.activeCards.push({ element: cardElement, data: nextCardData, speedMultiplier });
     }
 
     const spawnDelay = Math.max(8000 - state.score * 250, 2000); // From 8s down to 2s
@@ -413,7 +427,7 @@ export function handleCorrectAnswer(answer: string): boolean {
     return cardRemoved;
 }
 
-export function handleIncorrectCard(card: { element: HTMLElement, data: FlashCard }) {
+export function handleIncorrectCard(card: ActiveCard) {
     state.health--;
     updateStats();
 
@@ -449,7 +463,7 @@ export function gameLoop() {
     // Move cards down
     state.activeCards = state.activeCards.filter(card => {
         const currentTop = parseFloat(card.element.style.top || '0');
-        const newTop = currentTop + state.gameSpeed;
+        const newTop = currentTop + (state.gameSpeed * card.speedMultiplier);
         card.element.style.top = `${newTop}px`;
 
         // Check if card hits the bottom
