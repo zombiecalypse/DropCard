@@ -1,5 +1,8 @@
-import { FlashCard, cardProvider } from './cards.js';
+import { FlashCard, getCardProvider } from './cards.js';
 
+const urlParams = new URLSearchParams(window.location.search);
+const mode = urlParams.get('mode');
+const cardProvider = getCardProvider(mode);
 export const cardData = cardProvider.getCards();
 
 interface ActiveCard {
@@ -302,7 +305,6 @@ export function gameLoop() {
 
 // Start the game
 if (typeof process === 'undefined' || process.env.NODE_ENV !== 'test') {
-    const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('debug') === 'true') {
         state.debug = true;
     }

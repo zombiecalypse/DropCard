@@ -247,4 +247,27 @@ class DefaultCardProvider implements CardProvider {
     }
 }
 
-export const cardProvider: CardProvider = new DefaultCardProvider();
+class ReverseCardProvider implements CardProvider {
+    private provider: CardProvider;
+
+    constructor(provider: CardProvider) {
+        this.provider = provider;
+    }
+
+    getCards(): FlashCard[] {
+        return this.provider.getCards().map(card => ({
+            front: card.back,
+            back: card.front,
+        }));
+    }
+}
+
+export function getCardProvider(mode?: string | null): CardProvider {
+    const baseProvider = new DefaultCardProvider();
+    switch (mode) {
+        case 'reverse':
+            return new ReverseCardProvider(baseProvider);
+        default:
+            return baseProvider;
+    }
+}
