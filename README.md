@@ -11,7 +11,20 @@ A simple web-based flashcard game to help you study. Answer the prompts on the f
 -   If your answer is correct, the card disappears and your score increases.
 -   If a card reaches the bottom of the screen, you lose one health point.
 -   The game ends when you run out of health.
--   You can pause and resume the game by pressing `Enter` while the input box is empty.
+-   Press `Tab` to pause the game, and `Enter` to resume.
+
+## Features
+
+### Game Modes
+
+You can change the game mode by adding a `mode` parameter to the URL:
+
+-   **`?mode=reverse`**: Practice translating from English to Welsh.
+-   **`?mode=both`**: Practice both Welsh to English and English to Welsh.
+
+### Debug Mode
+
+For developers or curious players, you can enable debug mode with the `?debug=true` URL parameter. This will display a list of all currently unlocked cards on the side of the game area.
 
 ## Development
 
