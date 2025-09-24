@@ -101,17 +101,19 @@ export function createCardElement(card: FlashCard): HTMLElement {
 }
 
 export function spawnCard() {
-    if (document.hidden || state.health <= 0) return; // Don't spawn cards if tab is not active or game is over
+    if (state.health <= 0) return; // Don't spawn cards if game is over
 
-    if (state.cardDeck.length === 0) {
-        createShuffledDeck();
+    if (!document.hidden) {
+        if (state.cardDeck.length === 0) {
+            createShuffledDeck();
+        }
+
+        const nextCardData = state.cardDeck.pop()!;
+        const cardElement = createCardElement(nextCardData);
+
+        gameArea.appendChild(cardElement);
+        state.activeCards.push({ element: cardElement, data: nextCardData });
     }
-
-    const nextCardData = state.cardDeck.pop()!;
-    const cardElement = createCardElement(nextCardData);
-
-    gameArea.appendChild(cardElement);
-    state.activeCards.push({ element: cardElement, data: nextCardData });
 
     const spawnDelay = Math.max(8000 - state.score * 250, 2000); // From 8s down to 2s
     spawnTimeoutId = setTimeout(spawnCard, spawnDelay);
