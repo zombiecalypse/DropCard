@@ -5,6 +5,7 @@ export interface FlashCard {
 }
 
 export interface CardProvider {
+    // Returns the full deck in ascending order of difficulty.
     getCards(): FlashCard[];
 }
 
