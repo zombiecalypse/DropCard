@@ -43,7 +43,8 @@ describe('FlashCard Game Tests', () => {
 
             state.activeCards.push({
                 element: cardElement,
-                data: { front: 'Diolch', back: ['Thank you', 'Thanks'] }
+                data: { front: 'Diolch', back: ['Thank you', 'Thanks'] },
+                speedMultiplier: 1.0
             });
 
             const result = handleCorrectAnswer('Thank you');
@@ -61,7 +62,8 @@ describe('FlashCard Game Tests', () => {
 
             state.activeCards.push({
                 element: cardElement,
-                data: { front: 'Diolch', back: ['Thank you', 'Thanks'] }
+                data: { front: 'Diolch', back: ['Thank you', 'Thanks'] },
+                speedMultiplier: 1.0
             });
 
             const result = handleCorrectAnswer('Wrong answer');
