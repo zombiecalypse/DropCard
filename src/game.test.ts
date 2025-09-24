@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { state, createShuffledDeck, handleCorrectAnswer, cardData, initGameDOM, updateStats } from './game';
+import { getCardProvider } from './cards';
 
 describe('FlashCard Game Tests', () => {
 
@@ -22,6 +23,38 @@ describe('FlashCard Game Tests', () => {
         if (gameArea) {
             gameArea.innerHTML = '';
         }
+    });
+
+    describe('Card Providers', () => {
+        it('should return default cards when no mode is specified', () => {
+            const defaultProvider = getCardProvider();
+            const defaultCards = defaultProvider.getCards();
+            const heloCard = defaultCards.find(c => c.front[0] === 'Helo');
+            expect(heloCard?.back[0]).toBe('Hello');
+        });
+
+        it('should return reversed cards for "reverse" mode', () => {
+            const reverseProvider = getCardProvider('reverse');
+            const reversedCards = reverseProvider.getCards();
+            const helloCard = reversedCards.find(c => c.front[0] === 'Hello');
+            expect(helloCard?.back[0]).toBe('Helo');
+        });
+
+        it('should return forward and reversed cards for "both" mode', () => {
+            const defaultProvider = getCardProvider();
+            const defaultCards = defaultProvider.getCards();
+
+            const bothProvider = getCardProvider('both');
+            const bothCards = bothProvider.getCards();
+            
+            expect(bothCards.length).toBe(defaultCards.length * 2);
+
+            const heloCard = defaultCards[0]; // Assuming "Helo" is the first card
+            expect(bothCards[0].front[0]).toBe(heloCard.front[0]); // Helo
+            expect(bothCards[0].back[0]).toBe(heloCard.back[0]); // Hello
+            expect(bothCards[1].front[0]).toBe(heloCard.back[0]); // Hello
+            expect(bothCards[1].back[0]).toBe(heloCard.front[0]); // Helo
+        });
     });
 
     describe('createShuffledDeck', () => {
