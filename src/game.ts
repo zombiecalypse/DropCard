@@ -245,6 +245,7 @@ export const state = {
     gameSpeed: 1, // Pixels per frame
     cardDeck: [] as FlashCard[],
     paused: false,
+    unlockedCardsCount: 0,
 };
 
 let spawnTimeoutId: ReturnType<typeof setTimeout>;
@@ -323,9 +324,19 @@ export function updateStats() {
 }
 
 export function createShuffledDeck() {
+    if (state.unlockedCardsCount === 0) {
+        // Start with the first 10 cards
+        state.unlockedCardsCount = 10;
+    } else {
+        // Add 10 more cards, up to the total number of cards available
+        state.unlockedCardsCount = Math.min(state.unlockedCardsCount + 10, cardData.length);
+    }
+
+    const cardsToShuffle = cardData.slice(0, state.unlockedCardsCount);
+
     const deck: FlashCard[] = [];
     for (let i = 0; i < 5; i++) {
-        deck.push(...cardData);
+        deck.push(...cardsToShuffle);
     }
 
     // Fisher-Yates shuffle
