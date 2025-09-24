@@ -42,6 +42,11 @@ export function initGameDOM() {
     answerInput.addEventListener('keydown', (event) => {
         if (event.key !== 'Enter') return;
 
+        if (state.health <= 0) {
+            restartGame();
+            return;
+        }
+
         if (state.paused) {
             resumeGame();
             return;
@@ -91,6 +96,30 @@ function resumeGame() {
     // Restart game logic
     gameLoopId = requestAnimationFrame(gameLoop);
     spawnCard();
+}
+
+function restartGame() {
+    // Clear game area of cards and "Game Over" message
+    gameArea.innerHTML = '';
+
+    // Reset game state
+    state.health = 3; // Initial health
+    state.score = 0;
+    state.activeCards = [];
+    state.cardDeck = [];
+    state.paused = false;
+    state.gameSpeed = 1;
+    state.unlockedCardsCount = 0;
+    state.newCardThreshold = 0;
+
+    answerInput.disabled = false;
+    answerInput.value = '';
+
+    // Restart game processes
+    updateStats();
+    createShuffledDeck();
+    spawnCard();
+    gameLoopId = requestAnimationFrame(gameLoop);
 }
 
 export function updateStats() {
@@ -238,8 +267,7 @@ export function endGame() {
     if (gameLoopId) cancelAnimationFrame(gameLoopId);
 
     // Show game over message
-    gameArea.innerHTML = '<h1>Game Over</h1>';
-    answerInput.disabled = true;
+    gameArea.innerHTML = '<h1>Game Over</h1><p>Press Enter to restart</p>';
 }
 
 export function gameLoop() {
