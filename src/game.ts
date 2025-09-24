@@ -26,7 +26,7 @@ export const state = {
     cardDeck: [] as FlashCard[],
 };
 
-let spawnTimeoutId: number;
+let spawnTimeoutId: ReturnType<typeof setTimeout>;
 let gameLoopId: number;
 
 // DOM Elements
