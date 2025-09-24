@@ -24,6 +24,7 @@ export const state = {
     activeCards: [] as { element: HTMLElement, data: FlashCard }[],
     gameSpeed: 1, // Pixels per frame
     cardDeck: [] as FlashCard[],
+    paused: false,
 };
 
 let spawnTimeoutId: ReturnType<typeof setTimeout>;
@@ -45,6 +46,11 @@ export function initGameDOM() {
     answerInput.addEventListener('keydown', (event) => {
         if (event.key !== 'Enter') return;
 
+        if (state.paused) {
+            resumeGame();
+            return;
+        }
+
         const answer = answerInput.value.trim();
         answerInput.value = '';
 
@@ -55,6 +61,40 @@ export function initGameDOM() {
             setTimeout(() => document.body.classList.remove('shake'), 500);
         }
     });
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            pauseGame();
+        }
+    });
+}
+
+function pauseGame() {
+    if (state.paused || state.health <= 0) return;
+    state.paused = true;
+    clearTimeout(spawnTimeoutId);
+    if (gameLoopId) cancelAnimationFrame(gameLoopId);
+
+    // Show pause message
+    const pauseOverlay = document.createElement('div');
+    pauseOverlay.id = 'pause-overlay';
+    pauseOverlay.innerHTML = '<h1>Paused</h1><p>Press Enter to continue</p>';
+    gameArea.appendChild(pauseOverlay);
+}
+
+function resumeGame() {
+    if (!state.paused) return;
+    state.paused = false;
+
+    // Remove pause message
+    const pauseOverlay = document.getElementById('pause-overlay');
+    if (pauseOverlay) {
+        pauseOverlay.remove();
+    }
+
+    // Restart game logic
+    gameLoopId = requestAnimationFrame(gameLoop);
+    spawnCard();
 }
 
 export function updateStats() {
