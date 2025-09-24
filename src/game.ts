@@ -16,6 +16,8 @@ const cardData: FlashCard[] = [
     { front: "Hwyl", back: ["Bye"] },
 ];
 
+let cardDeck: FlashCard[] = [];
+
 // Game state
 const maxHealth = 5;
 let health = 3;
@@ -33,6 +35,20 @@ const answerInput = document.getElementById('answer-input') as HTMLInputElement;
 function updateStats() {
     healthDisplay.textContent = '❤️'.repeat(health) + '🖤'.repeat(maxHealth - health);
     scoreDisplay.textContent = score.toString();
+}
+
+function createShuffledDeck() {
+    const deck: FlashCard[] = [];
+    for (let i = 0; i < 5; i++) {
+        deck.push(...cardData);
+    }
+
+    // Fisher-Yates shuffle
+    for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
+    cardDeck = deck;
 }
 
 function createCardElement(card: FlashCard): HTMLElement {
@@ -62,11 +78,15 @@ function createCardElement(card: FlashCard): HTMLElement {
 function spawnCard() {
     if (document.hidden || health <= 0) return; // Don't spawn cards if tab is not active or game is over
 
-    const randomCardData = cardData[Math.floor(Math.random() * cardData.length)];
-    const cardElement = createCardElement(randomCardData);
+    if (cardDeck.length === 0) {
+        createShuffledDeck();
+    }
+
+    const nextCardData = cardDeck.pop()!;
+    const cardElement = createCardElement(nextCardData);
 
     gameArea.appendChild(cardElement);
-    activeCards.push({ element: cardElement, data: randomCardData });
+    activeCards.push({ element: cardElement, data: nextCardData });
 
     const spawnDelay = Math.max(8000 - score * 250, 2000); // From 8s down to 2s
     spawnTimeoutId = setTimeout(spawnCard, spawnDelay);
@@ -162,5 +182,6 @@ answerInput.addEventListener('keydown', (event) => {
 
 // Start the game
 updateStats();
+createShuffledDeck();
 spawnCard(); // Start the first card spawn, which will schedule the next one
 let gameLoopId = requestAnimationFrame(gameLoop);
