@@ -20,7 +20,8 @@ const cardData: FlashCard[] = [
 let health = 3;
 let score = 0;
 let activeCards: { element: HTMLElement, data: FlashCard }[] = [];
-const gameSpeed = 1; // Pixels per frame
+let gameSpeed = 1; // Pixels per frame
+let spawnTimeoutId: number;
 
 // DOM Elements
 const gameArea = document.getElementById('game-area')!;
@@ -65,6 +66,9 @@ function spawnCard() {
 
     gameArea.appendChild(cardElement);
     activeCards.push({ element: cardElement, data: randomCardData });
+
+    const spawnDelay = Math.max(8000 - score * 250, 2000); // From 8s down to 2s
+    spawnTimeoutId = setTimeout(spawnCard, spawnDelay);
 }
 
 function handleCorrectAnswer(answer: string): boolean {
@@ -81,6 +85,8 @@ function handleCorrectAnswer(answer: string): boolean {
 
     if (cardRemoved) {
         updateStats();
+        // Increase drop speed every 5 points
+        gameSpeed = 1 + Math.floor(score / 5) * 0.2;
     }
     return cardRemoved;
 }
@@ -104,7 +110,7 @@ function handleIncorrectCard(card: { element: HTMLElement, data: FlashCard }) {
 
 function endGame() {
     // Clear intervals
-    clearInterval(spawnInterval);
+    clearTimeout(spawnTimeoutId);
     if (gameLoopId) cancelAnimationFrame(gameLoopId);
 
     // Show game over message
@@ -152,5 +158,5 @@ answerInput.addEventListener('keydown', (event) => {
 
 // Start the game
 updateStats();
-const spawnInterval = setInterval(spawnCard, 2000); // Spawn a new card every 2 seconds
+spawnCard(); // Start the first card spawn, which will schedule the next one
 let gameLoopId = requestAnimationFrame(gameLoop);
