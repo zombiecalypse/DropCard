@@ -189,7 +189,7 @@ body.shake {
     }
 
     #game-area {
-        height: 70vh; /* Adjust height for smaller screens */
+        height: 50vh; /* Adjust height for smaller screens */
     }
 
     #debug-panel {

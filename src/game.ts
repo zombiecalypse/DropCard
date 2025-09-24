@@ -24,6 +24,7 @@ export const state = {
     unlockedCardsCount: 0,
     newCardThreshold: 0,
     debug: false,
+    isMobile: false,
 };
 
 let spawnTimeoutId: ReturnType<typeof setTimeout>;
@@ -118,7 +119,7 @@ function restartGame() {
     state.activeCards = [];
     state.cardDeck = [];
     state.paused = false;
-    state.gameSpeed = 1;
+    state.gameSpeed = state.isMobile ? 0.625 : 1;
     state.unlockedCardsCount = 0;
     state.newCardThreshold = 0;
 
@@ -255,7 +256,8 @@ export function handleCorrectAnswer(answer: string): boolean {
     if (cardRemoved) {
         updateStats();
         // Increase drop speed every 5 points
-        state.gameSpeed = 1 + Math.floor(state.score / 5) * 0.2;
+        const baseSpeed = state.isMobile ? 0.625 : 1;
+        state.gameSpeed = baseSpeed + Math.floor(state.score / 5) * 0.2;
     }
     return cardRemoved;
 }
@@ -312,6 +314,11 @@ export function gameLoop() {
 
 // Start the game
 if (typeof process === 'undefined' || process.env.NODE_ENV !== 'test') {
+    state.isMobile = window.innerWidth <= 768;
+    if (state.isMobile) {
+        state.gameSpeed = 0.625;
+    }
+
     if (urlParams.get('debug') === 'true') {
         state.debug = true;
     }
