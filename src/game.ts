@@ -20,6 +20,7 @@ export const state = {
     paused: false,
     unlockedCardsCount: 0,
     newCardThreshold: 0,
+    debug: false,
 };
 
 let spawnTimeoutId: ReturnType<typeof setTimeout>;
@@ -97,6 +98,25 @@ export function updateStats() {
     scoreDisplay.textContent = state.score.toString();
 }
 
+function updateDebugPanel() {
+    if (!state.debug) return;
+
+    const debugPanel = document.getElementById('debug-panel');
+    if (!debugPanel) return;
+
+    debugPanel.style.display = 'block';
+
+    const unlockedCards = cardData.slice(0, state.unlockedCardsCount);
+    unlockedCards.sort((a, b) => a.front.localeCompare(b.front));
+
+    let content = '<h2>Unlocked Cards</h2><ul>';
+    unlockedCards.forEach(card => {
+        content += `<li><b>${card.front}</b>: ${card.back.join(' / ')}</li>`;
+    });
+    content += '</ul>';
+    debugPanel.innerHTML = content;
+}
+
 export function createShuffledDeck() {
     state.newCardThreshold = state.unlockedCardsCount;
     if (state.unlockedCardsCount === 0) {
@@ -120,6 +140,7 @@ export function createShuffledDeck() {
         [deck[i], deck[j]] = [deck[j], deck[i]];
     }
     state.cardDeck = deck;
+    updateDebugPanel();
 }
 
 export function createCardElement(card: FlashCard): HTMLElement {
@@ -247,6 +268,11 @@ export function gameLoop() {
 
 // Start the game
 if (typeof process === 'undefined' || process.env.NODE_ENV !== 'test') {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('debug') === 'true') {
+        state.debug = true;
+    }
+
     initGameDOM();
     updateStats();
     createShuffledDeck();

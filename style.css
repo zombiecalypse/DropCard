@@ -28,6 +28,39 @@ body {
     overflow: hidden; /* Important for cards */
 }
 
+.game-wrapper {
+    display: flex;
+    align-items: flex-start;
+}
+
+#debug-panel {
+    display: none;
+    width: 250px;
+    height: 80vh; /* Match game-area height */
+    margin-left: 10px;
+    border: 1px solid #ccc;
+    background-color: #fafafa;
+    overflow-y: auto;
+    padding: 10px;
+    font-size: 0.9em;
+}
+
+#debug-panel h2 {
+    margin-top: 0;
+    font-size: 1.2em;
+}
+
+#debug-panel ul {
+    padding-left: 0;
+    list-style: none;
+    margin: 0;
+}
+
+#debug-panel li {
+    padding: 2px 0;
+    border-bottom: 1px solid #eee;
+}
+
 .card {
     position: absolute;
     width: 100px;
