@@ -30,3 +30,7 @@ To run the game locally:
     ```bash
     npm test
     ```
+
+## Why?
+
+This is an experiment for trying out coding agents in a green-field environment. Plus I want to learn welsh.
