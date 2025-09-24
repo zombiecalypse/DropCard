@@ -1,11 +1,11 @@
 // Define the structure for a flash card
-interface FlashCard {
+export interface FlashCard {
     front: string;
     back: string[];
 }
 
 // Sample card data
-const cardData: FlashCard[] = [
+export const cardData: FlashCard[] = [
     { front: "Helo", back: ["Hello"] },
     { front: "Bore da", back: ["Good morning"] },
     { front: "Prynhawn da", back: ["Good afternoon"] },
@@ -16,15 +16,18 @@ const cardData: FlashCard[] = [
     { front: "Hwyl", back: ["Bye"] },
 ];
 
-let cardDeck: FlashCard[] = [];
-
 // Game state
-const maxHealth = 5;
-let health = 3;
-let score = 0;
-let activeCards: { element: HTMLElement, data: FlashCard }[] = [];
-let gameSpeed = 1; // Pixels per frame
+export const state = {
+    maxHealth: 5,
+    health: 3,
+    score: 0,
+    activeCards: [] as { element: HTMLElement, data: FlashCard }[],
+    gameSpeed: 1, // Pixels per frame
+    cardDeck: [] as FlashCard[],
+};
+
 let spawnTimeoutId: number;
+let gameLoopId: number;
 
 // DOM Elements
 const gameArea = document.getElementById('game-area')!;
@@ -32,12 +35,12 @@ const healthDisplay = document.getElementById('health')!;
 const scoreDisplay = document.getElementById('score')!;
 const answerInput = document.getElementById('answer-input') as HTMLInputElement;
 
-function updateStats() {
-    healthDisplay.textContent = '❤️'.repeat(health) + '🖤'.repeat(maxHealth - health);
-    scoreDisplay.textContent = score.toString();
+export function updateStats() {
+    healthDisplay.textContent = '❤️'.repeat(state.health) + '🖤'.repeat(state.maxHealth - state.health);
+    scoreDisplay.textContent = state.score.toString();
 }
 
-function createShuffledDeck() {
+export function createShuffledDeck() {
     const deck: FlashCard[] = [];
     for (let i = 0; i < 5; i++) {
         deck.push(...cardData);
@@ -48,10 +51,10 @@ function createShuffledDeck() {
         const j = Math.floor(Math.random() * (i + 1));
         [deck[i], deck[j]] = [deck[j], deck[i]];
     }
-    cardDeck = deck;
+    state.cardDeck = deck;
 }
 
-function createCardElement(card: FlashCard): HTMLElement {
+export function createCardElement(card: FlashCard): HTMLElement {
     const cardElement = document.createElement('div');
     cardElement.className = 'card';
 
@@ -75,31 +78,31 @@ function createCardElement(card: FlashCard): HTMLElement {
     return cardElement;
 }
 
-function spawnCard() {
-    if (document.hidden || health <= 0) return; // Don't spawn cards if tab is not active or game is over
+export function spawnCard() {
+    if (document.hidden || state.health <= 0) return; // Don't spawn cards if tab is not active or game is over
 
-    if (cardDeck.length === 0) {
+    if (state.cardDeck.length === 0) {
         createShuffledDeck();
     }
 
-    const nextCardData = cardDeck.pop()!;
+    const nextCardData = state.cardDeck.pop()!;
     const cardElement = createCardElement(nextCardData);
 
     gameArea.appendChild(cardElement);
-    activeCards.push({ element: cardElement, data: nextCardData });
+    state.activeCards.push({ element: cardElement, data: nextCardData });
 
-    const spawnDelay = Math.max(8000 - score * 250, 2000); // From 8s down to 2s
+    const spawnDelay = Math.max(8000 - state.score * 250, 2000); // From 8s down to 2s
     spawnTimeoutId = setTimeout(spawnCard, spawnDelay);
 }
 
-function handleCorrectAnswer(answer: string): boolean {
+export function handleCorrectAnswer(answer: string): boolean {
     let cardRemoved = false;
-    activeCards = activeCards.filter(card => {
+    state.activeCards = state.activeCards.filter(card => {
         if (card.data.back.some(b => b.toLowerCase() === answer.toLowerCase())) {
             card.element.remove();
-            score++;
-            if (score > 0 && score % 5 === 0 && health < maxHealth) {
-                health++;
+            state.score++;
+            if (state.score > 0 && state.score % 5 === 0 && state.health < state.maxHealth) {
+                state.health++;
             }
             cardRemoved = true;
             return false; // Remove from active cards
@@ -110,13 +113,13 @@ function handleCorrectAnswer(answer: string): boolean {
     if (cardRemoved) {
         updateStats();
         // Increase drop speed every 5 points
-        gameSpeed = 1 + Math.floor(score / 5) * 0.2;
+        state.gameSpeed = 1 + Math.floor(state.score / 5) * 0.2;
     }
     return cardRemoved;
 }
 
-function handleIncorrectCard(card: { element: HTMLElement, data: FlashCard }) {
-    health--;
+export function handleIncorrectCard(card: { element: HTMLElement, data: FlashCard }) {
+    state.health--;
     updateStats();
 
     // Flip card to show answer
@@ -127,12 +130,12 @@ function handleIncorrectCard(card: { element: HTMLElement, data: FlashCard }) {
         card.element.remove();
     }, 2000);
 
-    if (health <= 0) {
+    if (state.health <= 0) {
         endGame();
     }
 }
 
-function endGame() {
+export function endGame() {
     // Clear intervals
     clearTimeout(spawnTimeoutId);
     if (gameLoopId) cancelAnimationFrame(gameLoopId);
@@ -142,16 +145,16 @@ function endGame() {
     answerInput.disabled = true;
 }
 
-function gameLoop() {
-    if (health <= 0) {
+export function gameLoop() {
+    if (state.health <= 0) {
         return;
     }
     const gameAreaHeight = gameArea.clientHeight;
 
     // Move cards down
-    activeCards = activeCards.filter(card => {
+    state.activeCards = state.activeCards.filter(card => {
         const currentTop = parseFloat(card.element.style.top || '0');
-        const newTop = currentTop + gameSpeed;
+        const newTop = currentTop + state.gameSpeed;
         card.element.style.top = `${newTop}px`;
 
         // Check if card hits the bottom
@@ -181,7 +184,9 @@ answerInput.addEventListener('keydown', (event) => {
 });
 
 // Start the game
-updateStats();
-createShuffledDeck();
-spawnCard(); // Start the first card spawn, which will schedule the next one
-let gameLoopId = requestAnimationFrame(gameLoop);
+if (process.env.NODE_ENV !== 'test') {
+    updateStats();
+    createShuffledDeck();
+    spawnCard(); // Start the first card spawn, which will schedule the next one
+    gameLoopId = requestAnimationFrame(gameLoop);
+}
