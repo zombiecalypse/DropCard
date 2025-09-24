@@ -4,8 +4,12 @@ export interface FlashCard {
     back: string[];
 }
 
+export interface CardProvider {
+    getCards(): FlashCard[];
+}
+
 // Sample card data
-export const cardData: FlashCard[] = [
+const cardData: FlashCard[] = [
     // Greetings
     { front: "Helo", back: ["Hello"] },
     { front: "Bore da", back: ["Good morning"] },
@@ -235,3 +239,11 @@ export const cardData: FlashCard[] = [
     { front: "Seren", back: ["Star"] },
     { front: "Lleuad", back: ["Moon"] },
 ];
+
+class DefaultCardProvider implements CardProvider {
+    getCards(): FlashCard[] {
+        return cardData;
+    }
+}
+
+export const cardProvider: CardProvider = new DefaultCardProvider();

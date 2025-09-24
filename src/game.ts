@@ -1,4 +1,6 @@
-import { FlashCard, cardData } from './cards';
+import { FlashCard, cardProvider } from './cards';
+
+const cardData = cardProvider.getCards();
 
 interface ActiveCard {
     element: HTMLElement;
