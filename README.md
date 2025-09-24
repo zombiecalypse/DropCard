@@ -1,5 +1,7 @@
 # Falling Flashcards Game
 
+[**Play Online!**](https://<your-github-username>.github.io/<your-repo-name>/)
+
 A simple web-based flashcard game to help you study. Answer the prompts on the falling cards before they reach the bottom of the screen!
 
 ## How to Play
