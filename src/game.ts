@@ -1,19 +1,19 @@
 // Define the structure for a flash card
 interface FlashCard {
     front: string;
-    back: string;
+    back: string[];
 }
 
 // Sample card data
 const cardData: FlashCard[] = [
-    { front: "Helo", back: "Hello" },
-    { front: "Bore da", back: "Good morning" },
-    { front: "Prynhawn da", back: "Good afternoon" },
-    { front: "Nos da", back: "Good night" },
-    { front: "Sut mae?", back: "How are you?" },
-    { front: "Diolch", back: "Thank you" },
-    { front: "Croeso", back: "Welcome" },
-    { front: "Hwyl", back: "Bye" },
+    { front: "Helo", back: ["Hello"] },
+    { front: "Bore da", back: ["Good morning"] },
+    { front: "Prynhawn da", back: ["Good afternoon"] },
+    { front: "Nos da", back: ["Good night"] },
+    { front: "Sut mae?", back: ["How are you?"] },
+    { front: "Diolch", back: ["Thank you", "Thanks"] },
+    { front: "Croeso", back: ["Welcome"] },
+    { front: "Hwyl", back: ["Bye"] },
 ];
 
 // Game state
@@ -44,7 +44,7 @@ function createCardElement(card: FlashCard): HTMLElement {
 
     const back = document.createElement('div');
     back.className = 'back';
-    back.textContent = card.back;
+    back.textContent = card.back.join(' / ');
 
     cardElement.appendChild(front);
     cardElement.appendChild(back);
@@ -74,7 +74,7 @@ function spawnCard() {
 function handleCorrectAnswer(answer: string): boolean {
     let cardRemoved = false;
     activeCards = activeCards.filter(card => {
-        if (card.data.back.toLowerCase() === answer.toLowerCase()) {
+        if (card.data.back.some(b => b.toLowerCase() === answer.toLowerCase())) {
             card.element.remove();
             score++;
             if (score > 0 && score % 5 === 0 && health < 5) {
