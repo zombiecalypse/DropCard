@@ -136,11 +136,11 @@ function updateDebugPanel() {
     debugPanel.style.display = 'block';
 
     const unlockedCards = cardData.slice(0, state.unlockedCardsCount);
-    unlockedCards.sort((a, b) => a.front.localeCompare(b.front));
+    unlockedCards.sort((a, b) => a.front[0].localeCompare(b.front[0]));
 
     let content = '<h2>Unlocked Cards</h2><ul>';
     unlockedCards.forEach(card => {
-        content += `<li><b>${card.front}</b>: ${card.back.join(' / ')}</li>`;
+        content += `<li><b>${card.front.join(' / ')}</b>: ${card.back.join(' / ')}</li>`;
     });
     content += '</ul>';
     debugPanel.innerHTML = content;
@@ -178,7 +178,7 @@ export function createCardElement(card: FlashCard): HTMLElement {
 
     const front = document.createElement('div');
     front.className = 'front';
-    front.textContent = card.front;
+    front.textContent = card.front.join(' / ');
 
     const back = document.createElement('div');
     back.className = 'back';

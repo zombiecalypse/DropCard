@@ -30,7 +30,7 @@ describe('FlashCard Game Tests', () => {
             expect(state.cardDeck.length).toBe(10 * 3);
 
             // Check if one card ('Helo') appears 3 times
-            const heloCards = state.cardDeck.filter(card => card.front === 'Helo');
+            const heloCards = state.cardDeck.filter(card => card.front.includes('Helo'));
             expect(heloCards.length).toBe(3);
         });
     });
@@ -43,7 +43,7 @@ describe('FlashCard Game Tests', () => {
 
             state.activeCards.push({
                 element: cardElement,
-                data: { front: 'Diolch', back: ['Thank you', 'Thanks'] },
+                data: { front: ['Diolch'], back: ['Thank you', 'Thanks'] },
                 speedMultiplier: 1.0
             });
 
@@ -62,7 +62,7 @@ describe('FlashCard Game Tests', () => {
 
             state.activeCards.push({
                 element: cardElement,
-                data: { front: 'Diolch', back: ['Thank you', 'Thanks'] },
+                data: { front: ['Diolch'], back: ['Thank you', 'Thanks'] },
                 speedMultiplier: 1.0
             });
 
