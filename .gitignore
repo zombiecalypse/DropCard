@@ -1,1 +1,21 @@
 .aider*
+# Dependencies
+/node_modules
+
+# Compiled TypeScript files
+/dist
+
+# Jest coverage reports
+/coverage
+
+# IDE settings
+.vscode/
+.idea/
+
+# macOS files
+.DS_Store
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
