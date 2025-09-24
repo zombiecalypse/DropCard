@@ -5,7 +5,6 @@ body {
     align-items: center;
     background-color: #f0f0f0;
     margin: 0;
-    overflow: hidden; /* Hide anything that goes off screen */
 }
 
 #game-info {
@@ -173,4 +172,30 @@ body.shake {
 
 #pause-overlay p {
     font-size: 1.2em;
+}
+
+@media (max-width: 768px) {
+    .game-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #game-info,
+    #answer-input,
+    #game-area,
+    #debug-panel {
+        width: 95vw;
+        max-width: 100%;
+    }
+
+    #game-area {
+        height: 70vh; /* Adjust height for smaller screens */
+    }
+
+    #debug-panel {
+        height: auto;
+        max-height: 200px;
+        margin-left: 0;
+        margin-top: 10px;
+    }
 }
