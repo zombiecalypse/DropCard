@@ -30,10 +30,32 @@ let spawnTimeoutId: ReturnType<typeof setTimeout>;
 let gameLoopId: number;
 
 // DOM Elements
-const gameArea = document.getElementById('game-area')!;
-const healthDisplay = document.getElementById('health')!;
-const scoreDisplay = document.getElementById('score')!;
-const answerInput = document.getElementById('answer-input') as HTMLInputElement;
+// Initialized in initGameDOM to allow tests to set up JSDOM first.
+let gameArea: HTMLElement = null!;
+let healthDisplay: HTMLElement = null!;
+let scoreDisplay: HTMLElement = null!;
+let answerInput: HTMLInputElement = null!;
+
+export function initGameDOM() {
+    gameArea = document.getElementById('game-area')!;
+    healthDisplay = document.getElementById('health')!;
+    scoreDisplay = document.getElementById('score')!;
+    answerInput = document.getElementById('answer-input') as HTMLInputElement;
+
+    answerInput.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') return;
+
+        const answer = answerInput.value.trim();
+        answerInput.value = '';
+
+        if (!answer) return;
+
+        if (!handleCorrectAnswer(answer)) {
+            document.body.classList.add('shake');
+            setTimeout(() => document.body.classList.remove('shake'), 500);
+        }
+    });
+}
 
 export function updateStats() {
     healthDisplay.textContent = '❤️'.repeat(state.health) + '🖤'.repeat(state.maxHealth - state.health);
@@ -168,23 +190,10 @@ export function gameLoop() {
     gameLoopId = requestAnimationFrame(gameLoop);
 }
 
-// Event Listeners
-answerInput.addEventListener('keydown', (event) => {
-    if (event.key !== 'Enter') return;
-
-    const answer = answerInput.value.trim();
-    answerInput.value = '';
-
-    if (!answer) return;
-
-    if (!handleCorrectAnswer(answer)) {
-        document.body.classList.add('shake');
-        setTimeout(() => document.body.classList.remove('shake'), 500);
-    }
-});
 
 // Start the game
 if (process.env.NODE_ENV !== 'test') {
+    initGameDOM();
     updateStats();
     createShuffledDeck();
     spawnCard(); // Start the first card spawn, which will schedule the next one

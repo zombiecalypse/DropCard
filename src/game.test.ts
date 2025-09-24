@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { state, createShuffledDeck, handleCorrectAnswer, cardData } from './game';
+import { state, createShuffledDeck, handleCorrectAnswer, cardData, initGameDOM } from './game';
 
 describe('FlashCard Game Tests', () => {
 
@@ -8,6 +8,7 @@ describe('FlashCard Game Tests', () => {
         // Load the HTML content into JSDOM
         const html = fs.readFileSync(path.resolve(__dirname, '../index.html'), 'utf8');
         document.body.innerHTML = html;
+        initGameDOM();
 
         // Reset state before each test
         state.health = 3;
