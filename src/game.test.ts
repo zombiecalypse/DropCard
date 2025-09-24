@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { state, createShuffledDeck, handleCorrectAnswer, cardData, initGameDOM } from './game';
+import { state, createShuffledDeck, handleCorrectAnswer, cardData, initGameDOM, updateStats } from './game';
 
 describe('FlashCard Game Tests', () => {
 
@@ -32,6 +32,20 @@ describe('FlashCard Game Tests', () => {
             // Check if one card ('Helo') appears 3 times
             const heloCards = state.cardDeck.filter(card => card.front.includes('Helo'));
             expect(heloCards.length).toBe(3);
+        });
+    });
+
+    describe('updateStats', () => {
+        it('should display the correct health and score', () => {
+            state.health = 2;
+            state.score = 123;
+            updateStats();
+
+            const healthDisplay = document.getElementById('health')!;
+            const scoreDisplay = document.getElementById('score')!;
+
+            expect(healthDisplay.textContent).toBe('❤️❤️🖤🖤🖤');
+            expect(scoreDisplay.textContent).toBe('123');
         });
     });
 
@@ -72,6 +86,67 @@ describe('FlashCard Game Tests', () => {
             expect(state.score).toBe(0);
             expect(state.activeCards.length).toBe(1);
             expect(gameArea.contains(cardElement)).toBe(true);
+        });
+
+        it('should restore 1 health when score is a multiple of 5', () => {
+            state.health = 2;
+            state.score = 4;
+            state.maxHealth = 5;
+
+            const gameArea = document.getElementById('game-area')!;
+            const cardElement = document.createElement('div');
+            gameArea.appendChild(cardElement);
+
+            state.activeCards.push({
+                element: cardElement,
+                data: { front: ['Diolch'], back: ['Thank you', 'Thanks'] },
+                speedMultiplier: 1.0
+            });
+
+            handleCorrectAnswer('Thank you');
+
+            expect(state.score).toBe(5);
+            expect(state.health).toBe(3);
+        });
+
+        it('should not restore health if already at max health', () => {
+            state.health = 5;
+            state.score = 4;
+            state.maxHealth = 5;
+
+            const gameArea = document.getElementById('game-area')!;
+            const cardElement = document.createElement('div');
+            gameArea.appendChild(cardElement);
+
+            state.activeCards.push({
+                element: cardElement,
+                data: { front: ['Diolch'], back: ['Thank you', 'Thanks'] },
+                speedMultiplier: 1.0
+            });
+
+            handleCorrectAnswer('Thank you');
+
+            expect(state.score).toBe(5);
+            expect(state.health).toBe(5);
+        });
+    });
+
+    describe('Game Over and Restart', () => {
+        it('should restart game when Enter is pressed after game over', () => {
+            const gameArea = document.getElementById('game-area')!;
+            gameArea.innerHTML = '<h1>Game Over</h1>';
+
+            state.health = 0;
+            state.score = 50;
+
+            const answerInput = document.getElementById('answer-input') as HTMLInputElement;
+            const enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
+            answerInput.dispatchEvent(enterEvent);
+
+            expect(state.health).toBe(3);
+            expect(state.score).toBe(0);
+            expect(state.cardDeck.length).toBeGreaterThan(0);
+            expect(gameArea.innerHTML).not.toContain('<h1>Game Over</h1>');
         });
     });
 });
