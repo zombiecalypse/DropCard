@@ -69,7 +69,7 @@ function spawnCard() {
     activeCards.push({ element: cardElement, data: randomCardData });
 }
 
-function handleCorrectAnswer(answer: string) {
+function handleCorrectAnswer(answer: string): boolean {
     let cardRemoved = false;
     activeCards = activeCards.filter(card => {
         if (card.data.back.toLowerCase() === answer.toLowerCase()) {
@@ -83,8 +83,8 @@ function handleCorrectAnswer(answer: string) {
 
     if (cardRemoved) {
         updateStats();
-        answerInput.value = '';
     }
+    return cardRemoved;
 }
 
 function handleIncorrectCard(card: { element: HTMLElement, data: FlashCard }) {
@@ -138,8 +138,18 @@ function gameLoop() {
 }
 
 // Event Listeners
-answerInput.addEventListener('input', () => {
-    handleCorrectAnswer(answerInput.value.trim());
+answerInput.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter') return;
+
+    const answer = answerInput.value.trim();
+    answerInput.value = '';
+
+    if (!answer) return;
+
+    if (!handleCorrectAnswer(answer)) {
+        document.body.classList.add('shake');
+        setTimeout(() => document.body.classList.remove('shake'), 500);
+    }
 });
 
 // Start the game
