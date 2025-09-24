@@ -6,6 +6,7 @@ export interface FlashCard {
 
 // Sample card data
 export const cardData: FlashCard[] = [
+    // Greetings
     { front: "Helo", back: ["Hello"] },
     { front: "Bore da", back: ["Good morning"] },
     { front: "Prynhawn da", back: ["Good afternoon"] },
@@ -14,6 +15,19 @@ export const cardData: FlashCard[] = [
     { front: "Diolch", back: ["Thank you", "Thanks"] },
     { front: "Croeso", back: ["Welcome"] },
     { front: "Hwyl", back: ["Bye"] },
+    
+    // Travel
+    { front: "Ble mae'r tŷ bach?", back: ["Where is the toilet?"] },
+    { front: "Gorsaf drenau", back: ["Train station"] },
+    { front: "Arhosfan bws", back: ["Bus stop"] },
+    { front: "Tocyn", back: ["Ticket"] },
+    { front: "Faint?", back: ["How much?"] },
+    { front: "Cwrw, os gwelwch yn dda.", back: ["A beer, please."] },
+    { front: "Iechyd da!", back: ["Cheers!"] },
+    { front: "Dydw i ddim yn deall.", back: ["I don't understand."] },
+    { front: "Ydych chi'n siarad Saesneg?", back: ["Do you speak English?"] },
+    { front: "Ydw", back: ["Yes"] },
+    { front: "Nac ydw", back: ["No"] },
 ];
 
 // Game state
