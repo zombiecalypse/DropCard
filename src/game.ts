@@ -192,7 +192,7 @@ export function gameLoop() {
 
 
 // Start the game
-if (process.env.NODE_ENV !== 'test') {
+if (typeof process === 'undefined' || process.env.NODE_ENV !== 'test') {
     initGameDOM();
     updateStats();
     createShuffledDeck();
