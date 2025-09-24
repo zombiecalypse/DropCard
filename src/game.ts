@@ -240,8 +240,9 @@ export function spawnCard() {
 
 export function handleCorrectAnswer(answer: string): boolean {
     let cardRemoved = false;
+    const normalizedAnswer = answer.toLowerCase().replace(/[.,?!']/g, '');
     state.activeCards = state.activeCards.filter(card => {
-        if (card.data.back.some(b => b.toLowerCase() === answer.toLowerCase())) {
+        if (card.data.back.some(b => b.toLowerCase().replace(/[.,?!']/g, '') === normalizedAnswer)) {
             card.element.remove();
             state.score++;
             if (state.score > 0 && state.score % 5 === 0 && state.health < state.maxHealth) {

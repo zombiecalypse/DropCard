@@ -162,6 +162,24 @@ describe('FlashCard Game Tests', () => {
             expect(state.score).toBe(5);
             expect(state.health).toBe(5);
         });
+
+        it('should ignore punctuation in answers', () => {
+            const gameArea = document.getElementById('game-area')!;
+            const cardElement = document.createElement('div');
+            gameArea.appendChild(cardElement);
+
+            state.activeCards.push({
+                element: cardElement,
+                data: { front: ['Sut mae?'], back: ['How are you?'] },
+                speedMultiplier: 1.0
+            });
+
+            const result = handleCorrectAnswer('How are you');
+
+            expect(result).toBe(true);
+            expect(state.score).toBe(1);
+            expect(state.activeCards.length).toBe(0);
+        });
     });
 
     describe('Game Over and Restart', () => {
