@@ -1,6 +1,6 @@
 # Falling Flashcards Game
 
-[**Play Online!**](https://zombiecalypse.github.io/DropCard/)
+[**Play Online!**](https://zombiecalypse.github.io/DropCard/index.html)
 
 A simple web-based flashcard game to help you study. Answer the prompts on the falling cards before they reach the bottom of the screen!
 
