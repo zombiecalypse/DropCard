@@ -17,6 +17,7 @@ const cardData: FlashCard[] = [
 ];
 
 // Game state
+const maxHealth = 5;
 let health = 3;
 let score = 0;
 let activeCards: { element: HTMLElement, data: FlashCard }[] = [];
@@ -30,7 +31,7 @@ const scoreDisplay = document.getElementById('score')!;
 const answerInput = document.getElementById('answer-input') as HTMLInputElement;
 
 function updateStats() {
-    healthDisplay.textContent = health.toString();
+    healthDisplay.textContent = '❤️'.repeat(health) + '🖤'.repeat(maxHealth - health);
     scoreDisplay.textContent = score.toString();
 }
 
@@ -77,7 +78,7 @@ function handleCorrectAnswer(answer: string): boolean {
         if (card.data.back.some(b => b.toLowerCase() === answer.toLowerCase())) {
             card.element.remove();
             score++;
-            if (score > 0 && score % 5 === 0 && health < 5) {
+            if (score > 0 && score % 5 === 0 && health < maxHealth) {
                 health++;
             }
             cardRemoved = true;
