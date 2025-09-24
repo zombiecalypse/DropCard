@@ -1,0 +1,17 @@
+{
+  "name": "flashcard-game",
+  "version": "1.0.0",
+  "description": "A flash card game",
+  "main": "dist/game.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "start": "http-server"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "typescript": "^5.0.0"
+  }
+}
